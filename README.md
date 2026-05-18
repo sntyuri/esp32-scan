@@ -1,0 +1,2 @@
+O ESP32-Scan é uma ferramenta de auditoria de redes sem fio de baixo custo focada em segurança ofensiva e defensiva. Por meio de um ESP32-S3, o projeto atua como um ponto de acesso independente, servindo um painel de controle web de forma local. 
+Através da interface utilitária, o usuário pode engajar testes de desautenticação, realizar varreduras de ambiente e habilitar a escuta passiva. Todos os dados interceptados são armazenados estruturalmente para posterior tratamento, mesclagem de arquivos e análise automatizada.

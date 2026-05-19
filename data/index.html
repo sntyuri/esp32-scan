@@ -72,6 +72,42 @@
             color: var(--accent-red);
             font-weight: bold;
         }
+
+        /*area dos botões*/
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Estilo base dos botoes*/
+        button {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            font-family: inherit;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            border-color: var(--text-main);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Botão de ataque/ação crítica */
+        .btn-danger {
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-red);
+        }
     </style>
 </head>
 <body>
@@ -93,7 +129,48 @@
             </div>
             
             </div>
+            <div class="controls">
+                <button onclick="scanNetworks()">1. Reconhecimento (Scan)</button>
+                <button class="btn-danger" onclick="startDeauth()">2. Engajar Deauth</button>
+                <button onclick="startMonitor()">3. IDS (Escuta Passiva)</button>
+            </div>
         </div>
+    <script>
+        const consoleOut = document.getElementById('console');
 
+        // função que escreve no no terminal
+        function logToConsole(message, type = 'info') {
+            const time = new Date().toLocaleTimeString('pt-BR', { hour12: false });
+            let prefix = `<span class="prompt">root@auditor:~#</span>`;
+            let color = '#cccccc';
+
+            if (type === 'danger') color = 'var(--accent-red)';
+            if (type === 'success') color = '#4caf50';
+            if (type === 'warning') color = '#ffeb3b';
+
+            const newLine = document.createElement('div');
+            newLine.innerHTML = `${prefix} [${time}] <span style="color: ${color}">${message}</span>`;
+            
+            consoleOut.appendChild(newLine);
+            consoleOut.scrollTop = consoleOut.scrollHeight; // Auto-scroll para a última linha
+        }
+
+        // Funções temporárias para teste (depois isso sera conectado ao C++)
+        function scanNetworks() {
+            logToConsole('Iniciando varredura 802.11...', 'info');
+            setTimeout(() => logToConsole('Rede: "Visitantes" | PWR: -65dBm', 'success'), 1000);
+            setTimeout(() => logToConsole('Rede: "Admin_Corp" | PWR: -40dBm', 'success'), 1800);
+        }
+
+        function startDeauth() {
+            logToConsole('ALVO SELECIONADO: "Admin_Corp"', 'warning');
+            logToConsole('Injetando pacotes de desautenticação...', 'danger');
+        }
+
+        function startMonitor() {
+            logToConsole('Alterando interface para MODO MONITOR...', 'info');
+            setTimeout(() => logToConsole('Escutando tráfego passivamente...', 'warning'), 1500);
+        }
+    </script>
 </body>
 </html>

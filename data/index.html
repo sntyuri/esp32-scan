@@ -35,11 +35,64 @@
             background-color: var(--panel-bg);
             box-shadow: 0 0 15px rgba(0,0,0,0.8);
         }
+
+        /* barra superior terminal */
+        .header {
+            background-color: var(--border-color);
+            padding: 5px 10px;
+            font-size: 0.9em;
+            color: #aaaaaa;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* espaçamento interno do box */
+        .content {
+            padding: 20px;
+        }
+
+        .sys-info {
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        /*monitor de logs */
+        .console-output {
+            background-color: #000000;
+            border: 1px solid var(--border-color);
+            height: 250px;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            color: #cccccc;
+        }
+
+        .prompt {
+            color: var(--accent-red);
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <div class="header">
+            <span>YK@ESP32:~</span>
+            <span>WLAN0: OFFLINE</span>
+        </div>
+
+        <div class="content">
+            <div class="sys-info">
+                Target Protocol: 802.11
+            </div>
+
+            <div class="console-output" id="console">
+                <div><span class="prompt">root@auditor:~#</span> Inicializando módulos de rádio... OK</div>
+                <div><span class="prompt">root@auditor:~#</span> Aguardando comandos...</div>
+            </div>
+            
+            </div>
         </div>
 
 </body>

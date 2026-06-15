@@ -1,176 +1,21 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YK@ESP32:~</title>
-    <style>
-        /*variaveis globais CSS*/
-        :root {
-            --bg-color: #0a0a0a;
-            --panel-bg: #111111;
-            --text-main: #d4d4d4;
-            --text-muted: #666666;
-            --accent-red: #c50f1f;
-            --accent-red-hover: #e01b2f;
-            --border-color: #333333;
-        }
+<meta charset="UTF-8">
+<title>ESP32-Scan</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+  button { padding: .5rem 1rem; margin-right: .5rem; cursor: pointer; }
+  #log { background: #111; color: #0f0; padding: 1rem; height: 250px; overflow-y: auto; border-radius: 4px; }
+</style>
 
-        /* estrutura base*/
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+<h3>ESP32-Scan &mdash; 802.11</h3>
+<button onclick="run('scan')">Scan</button>
+<button onclick="run('deauth')">Deauth</button>
+<button onclick="run('monitor')">Monitor</button>
 
-        /*box do painel*/
-        .container {
-            width: 100%;
-            max-width: 800px;
-            border: 1px solid var(--border-color);
-            background-color: var(--panel-bg);
-            box-shadow: 0 0 15px rgba(0,0,0,0.8);
-        }
+<pre id="log"></pre>
 
-        /* barra superior terminal */
-        .header {
-            background-color: var(--border-color);
-            padding: 5px 10px;
-            font-size: 0.9em;
-            color: #aaaaaa;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* espaçamento interno do box */
-        .content {
-            padding: 20px;
-        }
-
-        .sys-info {
-            margin-bottom: 20px;
-            color: var(--text-muted);
-            font-size: 0.85em;
-        }
-
-        /*monitor de logs */
-        .console-output {
-            background-color: #000000;
-            border: 1px solid var(--border-color);
-            height: 250px;
-            padding: 10px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            color: #cccccc;
-        }
-
-        .prompt {
-            color: var(--accent-red);
-            font-weight: bold;
-        }
-
-        /*area dos botões*/
-        .controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* Estilo base dos botoes*/
-        button {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 10px 20px;
-            font-family: inherit;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 0.9em;
-            transition: all 0.2s ease;
-        }
-
-        button:hover {
-            border-color: var(--text-main);
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Botão de ataque/ação crítica */
-        .btn-danger {
-            color: var(--accent-red);
-            border-color: var(--accent-red);
-        }
-
-        .btn-danger:hover {
-            background-color: var(--accent-red);
-            color: #ffffff;
-            border-color: var(--accent-red);
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="header">
-            <span>YK@ESP32:~</span>
-            <span>WLAN0: OFFLINE</span>
-        </div>
-
-        <div class="content">
-            <div class="sys-info">
-                Target Protocol: 802.11
-            </div>
-
-            <div class="console-output" id="console">
-                <div><span class="prompt">root@auditor:~#</span> Inicializando módulos de rádio... OK</div>
-                <div><span class="prompt">root@auditor:~#</span> Aguardando comandos...</div>
-            </div>
-            
-            </div>
-            <div class="controls">
-                <button onclick="scanNetworks()">1. Reconhecimento (Scan)</button>
-                <button class="btn-danger" onclick="startDeauth()">2. Engajar Deauth</button>
-                <button onclick="startMonitor()">3. IDS (Escuta Passiva)</button>
-            </div>
-        </div>
-    <script>
-        const consoleOut = document.getElementById('console');
-
-        // função que escreve no no terminal
-        function logToConsole(message, type = 'info') {
-            const time = new Date().toLocaleTimeString('pt-BR', { hour12: false });
-            let prefix = `<span class="prompt">root@auditor:~#</span>`;
-            let color = '#cccccc';
-
-            if (type === 'danger') color = 'var(--accent-red)';
-            if (type === 'success') color = '#4caf50';
-            if (type === 'warning') color = '#ffeb3b';
-
-            const newLine = document.createElement('div');
-            newLine.innerHTML = `${prefix} [${time}] <span style="color: ${color}">${message}</span>`;
-            
-            consoleOut.appendChild(newLine);
-            consoleOut.scrollTop = consoleOut.scrollHeight; // Auto-scroll para a última linha
-        }
-
-        // Funções temporárias para teste (depois isso sera conectado ao C++)
-        function scanNetworks() {
-            logToConsole('Iniciando varredura 802.11...', 'info');
-            setTimeout(() => logToConsole('Rede: "Visitantes" | PWR: -65dBm', 'success'), 1000);
-            setTimeout(() => logToConsole('Rede: "Admin_Corp" | PWR: -40dBm', 'success'), 1800);
-        }
-
-        function startDeauth() {
-            logToConsole('ALVO SELECIONADO: "Admin_Corp"', 'warning');
-            logToConsole('Injetando pacotes de desautenticação...', 'danger');
-        }
-
-        function startMonitor() {
-            logToConsole('Alterando interface para MODO MONITOR...', 'info');
-            setTimeout(() => logToConsole('Escutando tráfego passivamente...', 'warning'), 1500);
-        }
-    </script>
-</body>
-</html>
+<script>
+function run(cmd) {
+  log.textContent += new Date().toLocaleTimeString() + " > " + cmd + "\n";
+}
+</script>
